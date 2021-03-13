@@ -43,6 +43,7 @@ const LoginScreen = () => {
 
       <Button containerStyle={styles.button} onPress={signIn} title="Login" />
       <Button containerStyle={styles.button} type="outline" title="Register" />
+      <View style={{ height: 100 }} />
     </KeyboardAvoidingView>
   );
 };
@@ -58,5 +59,8 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
     },
     inputContainer: {},
-    button: {},
+    button: {
+      width: 200,
+      marginTop: 10,
+    },
 });
