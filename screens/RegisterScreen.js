@@ -17,9 +17,9 @@ const RegisterScreen = ({ navigation }) => {
     }, [navigation])
 
     const register = () => {
-        auth.createUserWithEmailAndPassword(email.password)
+        auth.createUserWithEmailAndPassword(email,password)
         .then(authUser => {
-            authUser.user.updateEmail({
+            authUser.user.updateProfile({
                 displayName: name,
                 photoURL: imageUrl || "https://blog.mozilla.org/internetcitizen/files/2018/08/signal-logo.png"
             })
