@@ -7,6 +7,8 @@ import { AntDesign, SimpleLineIcons } from "@expo/vector-icons"
 
 const HomeScreen = ({ navigation }) => {
 
+    
+
     const signOutUser = () => {
         auth.signOut().then(()=>{
             navigation.replace("Login")
