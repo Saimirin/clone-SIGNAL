@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -20,8 +20,8 @@ import { db, auth } from "../firebase";
 
 const ChatScreen = ({ navigation, route }) => {
   const [input, setInput] = useState("");
-  const [message, setMessages] = useState([]);
-
+  const [messages, setMessages] = useState([]);
+ 
   useLayoutEffect(() => {
     navigation.setOptions({
       title: "Chat",
@@ -95,11 +95,12 @@ const ChatScreen = ({ navigation, route }) => {
   };
 
   useLayoutEffect(() => {
+      
     const unsubscribe = db
       .collection("chats")
       .doc(route.params.id)
       .collection("messages")
-      .orderBy("timestamp", "desc")
+    //   .orderBy("timestamp", "desc") //with .orderBy won't set up the state, messages return []
       .onSnapshot((snapshot) =>
         setMessages(
           snapshot.docs.map((doc) => ({
@@ -123,7 +124,21 @@ const ChatScreen = ({ navigation, route }) => {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <>
-            <ScrollView>{/* {Chat goes here} */}</ScrollView>
+            <ScrollView>
+              {messages.map(({ id, data }) =>
+                data.email === auth.currentUser.email ? (
+                  <View key={id} style={styles.reciever}>
+                    <Avatar />
+                    <Text style={styles.recieverText}>{data.message}</Text>
+                  </View>
+                ) : (
+                  <View style={styles.sender}>
+                    <Avatar />
+                    <Text style={styles.senderText}>{data.message}</Text>
+                  </View>
+                )
+              )}
+            </ScrollView>
             <View style={styles.footer}>
               <TextInput
                 value={input}
@@ -148,6 +163,16 @@ export default ChatScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  reciever: {
+    padding: 15,
+    backgroundColor: "#ECECEC",
+    alignSelf: "flex-end",
+    borderRadius: 20,
+    marginRight: 15,
+    marginBottom: 20,
+    maxWidth: "80%",
+    position: "relative",
   },
   footer: {
     flexDirection: "row",
