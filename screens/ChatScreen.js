@@ -1,12 +1,10 @@
 import React, { useLayoutEffect, useState } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Platform, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, TextInput } from 'react-native'
 import { ListItem, Avatar } from "react-native-elements"
 import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons"
-import { SafeAreaView } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
-import { KeyboardAvoidingView } from 'react-native'
-import { Platform } from 'react-native'
-import { ScrollView, TextInput } from 'react-native-gesture-handler'
+import * as firebase from "firebase"
+import { db, auth } from '../firebase'
 
 const ChatScreen = ({ navigation, route }) => {
 
@@ -71,7 +69,17 @@ const ChatScreen = ({ navigation, route }) => {
     },[navigation])
 
     const sendMessage = () => {
+        Keyboard.dismiss();
+        
+        db.collection('chats').doc(route.params.id).collection('messages').add({
+            timestampe: firebase.firestore.FieldValue.serverTimestamp(), // this format will regardless which time zone you come from.
+            message: input,
+            displayName: auth.currentUser.displayName,
+            email: auth.currentUser.email,
+            photoURL: auth.currentUser.photoURL
+        })
 
+        setInput('')
     }
 
     return (
@@ -83,14 +91,16 @@ const ChatScreen = ({ navigation, route }) => {
                  style={styles.container}
                  keyboardVerticalOffset={90}
             >
-                <>
-                    <ScrollView>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <>
+                     <ScrollView>
                         {/* {Chat goes here} */}
                     </ScrollView>
                     <View style={styles.footer}>
                         <TextInput 
                         value={input}
                         onChangeText={(text) => setInput(text)}
+                        onSubmitEditing={sendMessage}
                         placeholder="Signal Message"
                         style={styles.textInput}
                         />
@@ -98,7 +108,8 @@ const ChatScreen = ({ navigation, route }) => {
                             <Ionicons name="send" size={24} color="#2B68E6" />
                         </TouchableOpacity>
                     </View>
-                </>
+                    </>
+                </TouchableWithoutFeedback>                                                   
             </KeyboardAvoidingView>
         </SafeAreaView>
     )
