@@ -79,18 +79,20 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
+  console.log('xxxxx',chats)
+
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>
-        {chats.map(({ id, data: { chatName } }) => (
+        {chats.map(({ id, data: { chatName, password } }) => (
           <CustomListItem
             key={id}
             id={id}
             chatName={chatName}
+            password={password}
             enterChat={enterChat}
           />
         ))}
-
       </ScrollView>
     </SafeAreaView>
   );

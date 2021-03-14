@@ -4,7 +4,7 @@ import { ListItem, Avatar } from "react-native-elements";
 
 import { db, auth } from "../firebase";
 
-const CustomListItem = ({ id, chatName, enterChat }) => {
+const CustomListItem = ({ id, chatName, enterChat, password }) => {
   const [chatMessages, setChatMessages] = useState([]);
   console.log('rendering CustomerListItem....')
 

@@ -5,8 +5,8 @@ import Icon from "react-native-vector-icons/FontAwesome"
 import { db } from "../firebase";
 
 const AddChatScreen = ({ navigation }) => {
-    const [input, setInput] = useState("")
-
+    const [chatName, setChatName] = useState("")
+    const [password, setPassword] = useState("")
     useLayoutEffect(() => {
         navigation.setOptions({
             title: "Add a new chat",
@@ -15,8 +15,9 @@ const AddChatScreen = ({ navigation }) => {
     }, [navigation])
 
     const createChat = async () => {
-        await db.collection('chats').add ({
-            chatName: input
+        await db.collection('chats').add ({            
+            chatName, 
+            password,
         }).then (()=>{
             navigation.goBack()
         }).catch ((error) => alert(error))
@@ -26,15 +27,29 @@ const AddChatScreen = ({ navigation }) => {
         <View style={styles.container}>
             <Input 
                 placeholder="Enter a chat name" 
-                value={input} 
-                onChangeText={(text) => setInput(text)}
+                value={chatName}
+                type="text" 
+                onChangeText={(text) => setChatName(text)}
                 onSubmitEditing={createChat}
                 leftIcon={
                      <Icon name="wechat" type="antdesign" size={24} color="black" />
                  }
             />
+
+            <Input 
+                placeholder="Create a chat room password"
+                secureTextEntry
+                type="password" 
+                value={password} 
+                onChangeText={(text) => setPassword(text)}
+                onSubmitEditing={createChat}
+                leftIcon={
+                     <Icon name="wechat" type="antdesign" size={24} color="black" />
+                 }
+            />
+
             <Button
-            disabled={!input} 
+            disabled={!chatName || !password} 
             onPress={createChat} title="Create New Chat" />
         </View>
     )
